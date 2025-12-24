@@ -6,40 +6,38 @@
   <title>Merry Christmas</title>
   <style>
     :root{
-      --accent:#d7263d; --accent-dark:#a21b2a; --text:#3a2028;
-      --card-front:#ffdbe6; --card-back:#fff7f2;
-      --glow: 0 8px 30px rgba(215,38,61,0.18);
+      /* Updated palette: deep burgundy background + warm gold accents */
+      --bg-start: #4a0f1d; --bg-end: #2a0710;
+      --accent: #ffd27d; --accent-strong: #ffb84d;
+      --text-main: #fff7f5; --muted: #f3d9cf;
+      --card-bg-a: rgba(255,255,255,0.06); --card-bg-b: rgba(255,255,255,0.04);
+      --glow: 0 10px 30px rgba(255,128,60,0.12);
     }
     *{box-sizing:border-box}
-    html,body{height:100%;margin:0;font-family:Inter, Poppins, Arial, sans-serif;overflow-x:hidden}
-    /* animated multicolor gradient background */
+    html,body{height:100%;margin:0;font-family:Inter, Poppins, Arial, sans-serif;overflow-x:hidden;color:var(--text-main)}
+
+    /* calmer, deeper background to let card pop */
     body{
-      background: linear-gradient(120deg,#ffeef3,#fff7f8);
-      animation: hueShift 12s linear infinite;
-    }
-    @keyframes hueShift {
-      0%{filter: hue-rotate(0deg);}
-      50%{filter: hue-rotate(40deg) saturate(1.05);}
-      100%{filter: hue-rotate(0deg);}
+      background: linear-gradient(180deg,var(--bg-start),var(--bg-end));
     }
 
     /* page layout */
     .page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;position:relative}
-    /* waves canvas behind content */
-    #waves{position:fixed;left:0;right:0;bottom:0;height:45vh;pointer-events:none;z-index:820;mix-blend-mode:screen;opacity:0.95}
+    /* waves canvas behind content (muted so it doesn't fight the palette) */
+    #waves{position:fixed;left:0;right:0;bottom:0;height:45vh;pointer-events:none;z-index:820;mix-blend-mode:screen;opacity:0.6}
     /* snow (kept) */
     #snow{position:fixed;inset:0;pointer-events:none;z-index:960}
 
     .card-wrap{width:100%;max-width:960px;display:flex;align-items:center;justify-content:center;z-index:1000;position:relative}
     .card-container{width:760px;max-width:96vw;height:460px;perspective:1200px;position:relative;transition:transform .3s ease-out}
-    .card-face{position:absolute;inset:0;border-radius:14px;box-shadow:0 18px 36px rgba(0,0,0,0.08);backface-visibility:hidden;transform-style:preserve-3d;display:flex;align-items:center;justify-content:center;transition:transform 700ms cubic-bezier(.2,.9,.2,1),box-shadow 200ms;overflow:hidden;padding:20px;background-size:cover;background-position:center}
-    .card-front{background:linear-gradient(180deg,var(--card-front),#ffcfe0);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;transform:rotateY(0deg)}
+    .card-face{position:absolute;inset:0;border-radius:14px;box-shadow:0 18px 36px rgba(0,0,0,0.28);backface-visibility:hidden;transform-style:preserve-3d;display:flex;align-items:center;justify-content:center;transition:transform 700ms cubic-bezier(.2,.9,.2,1),box-shadow 200ms;overflow:hidden;padding:20px;background-size:cover;background-position:center;backdrop-filter: blur(6px)}
+    .card-front{background:linear-gradient(180deg,var(--card-bg-a),var(--card-bg-b));display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;transform:rotateY(0deg)}
     .emoji{font-size:56px;margin-bottom:8px;animation:float 3.5s ease-in-out infinite}
     @keyframes float{0%{transform:translateY(0)}50%{transform:translateY(-6px)}100%{transform:translateY(0)}}
-    .front-content h1{margin:6px 0;font-size:34px;color:var(--accent-dark);text-shadow:0 2px 6px rgba(0,0,0,.06)}
-    .sub{color:#7a3a4f;margin:6px 0 16px;font-size:16px}
-    .open-btn{background:var(--accent);color:#fff;border:none;padding:12px 20px;border-radius:12px;font-weight:700;cursor:pointer;box-shadow: var(--glow)}
-    .card-back{background:linear-gradient(180deg,var(--card-back),#fffaf7);transform:rotateY(180deg);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:18px}
+    .front-content h1{margin:6px 0;font-size:34px;color:var(--accent);text-shadow:0 6px 18px rgba(0,0,0,.36)}
+    .sub{color:var(--muted);margin:6px 0 16px;font-size:16px}
+    .open-btn{background:linear-gradient(180deg,var(--accent-strong),var(--accent));color:#2b0a00;border:none;padding:12px 20px;border-radius:12px;font-weight:700;cursor:pointer;box-shadow: var(--glow)}
+    .card-back{background:linear-gradient(180deg,var(--card-bg-a),rgba(0,0,0,0.06));transform:rotateY(180deg);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:18px}
     .back-content{display:flex;flex-direction:column;align-items:center;gap:12px;padding:8px 14px;opacity:0;transform:translateY(10px);transition:opacity .6s ease,transform .6s ease}
     .card-container.is-flipped .back-content{opacity:1;transform:translateY(0)}
     .scene-img{
@@ -49,13 +47,13 @@
       height: auto;
       display:block;
       border-radius:12px;
-      box-shadow:0 10px 34px rgba(0,0,0,.14);
+      box-shadow:0 10px 34px rgba(0,0,0,.4);
       object-fit:contain;
       transition:transform .45s ease;
     }
-    .message{font-size:18px;color:var(--text);line-height:1.6;padding:8px 6px;max-width:86%;background:rgba(255,255,255,0.6);border-radius:8px}
+    .message{font-size:18px;color:var(--text-main);line-height:1.6;padding:14px 12px;max-width:86%;background:rgba(0,0,0,0.45);border-radius:10px}
     .back-actions{display:flex;gap:12px;margin-top:8px;align-items:center}
-    .close-btn{background:var(--accent);color:#fff;border:none;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:700;box-shadow: var(--glow)}
+    .close-btn{background:linear-gradient(180deg,var(--accent-strong),var(--accent));color:#2b0a00;border:none;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:700;box-shadow: var(--glow)}
     .card-container.is-flipped .card-front{transform:rotateY(-180deg)}
     .card-container.is-flipped .card-back{transform:rotateY(0deg)}
     @media (max-width:900px){.card-container{height:600px}.front-content h1{font-size:26px}.message{font-size:16px}}
@@ -65,8 +63,8 @@
     /* particles */
     .heart{position:fixed;pointer-events:none;z-index:1100;width:22px;height:22px;border-radius:50%;background: radial-gradient(circle at 30% 30%, #fff6, var(--accent));box-shadow:0 2px 8px rgba(0,0,0,.12);opacity:0.95;transform-origin:center}
     .confetti-piece{position:fixed;pointer-events:none;z-index:1100}
-    .glow-ring{position:absolute;inset:6px;border-radius:12px;box-shadow:0 0 100px rgba(255,75,142,0.08);pointer-events:none}
-    button:focus{outline:3px solid rgba(215,38,61,.14);outline-offset:2px}
+    .glow-ring{position:absolute;inset:6px;border-radius:12px;box-shadow:0 0 100px rgba(255,128,60,0.06);pointer-events:none}
+    button:focus{outline:3px solid rgba(255,180,100,.12);outline-offset:2px}
   </style>
 </head>
 <body>
