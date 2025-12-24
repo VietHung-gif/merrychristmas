@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Merry Christmas — Thiệp</title>
+  <style>
+    :root{
+      --accent:#d7263d; --accent-dark:#a21b2a; --text:#3a2028;
+      --card-front:#ffdbe6; --card-back:#fff7f2;
+      --glow: 0 8px 30px rgba(215,38,61,0.18);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter, Poppins, Arial, sans-serif;overflow-x:hidden}
+    /* animated multicolor gradient background */
+    body{
+      background: linear-gradient(120deg,#ffeef3,#fff7f8);
+      animation: hueShift 12s linear infinite;
+    }
+    @keyframes hueShift {
+      0%{filter: hue-rotate(0deg);}
+      50%{filter: hue-rotate(40deg) saturate(1.05);}
+      100%{filter: hue-rotate(0deg);}
+    }
+
+    /* page layout */
+    .page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px;position:relative}
+    /* waves canvas behind content */
+    #waves{position:fixed;left:0;right:0;bottom:0;height:45vh;pointer-events:none;z-index:820;mix-blend-mode:screen;opacity:0.95}
+    /* snow (kept) */
+    #snow{position:fixed;inset:0;pointer-events:none;z-index:960}
+
+    .card-wrap{width:100%;max-width:960px;display:flex;align-items:center;justify-content:center;z-index:1000;position:relative}
+    .card-container{width:760px;max-width:96vw;height:460px;perspective:1200px;position:relative;transition:transform .3s ease-out}
+    .card-face{position:absolute;inset:0;border-radius:14px;box-shadow:0 18px 36px rgba(0,0,0,0.08);backface-visibility:hidden;transform-style:preserve-3d;display:flex;align-items:center;justify-content:center;transition:transform 700ms cubic-bezier(.2,.9,.2,1),box-shadow 200ms;overflow:hidden;padding:20px;background-size:cover;background-position:center}
+    .card-front{background:linear-gradient(180deg,var(--card-front),#ffcfe0);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;transform:rotateY(0deg)}
+    .emoji{font-size:56px;margin-bottom:8px;animation:float 3.5s ease-in-out infinite}
+    @keyframes float{0%{transform:translateY(0)}50%{transform:translateY(-6px)}100%{transform:translateY(0)}}
+    .front-content h1{margin:6px 0;font-size:34px;color:var(--accent-dark);text-shadow:0 2px 6px rgba(0,0,0,.06)}
+    .sub{color:#7a3a4f;margin:6px 0 16px;font-size:16px}
+    .open-btn{background:var(--accent);color:#fff;border:none;padding:12px 20px;border-radius:12px;font-weight:700;cursor:pointer;box-shadow: var(--glow)}
+    .card-back{background:linear-gradient(180deg,var(--card-back),#fffaf7);transform:rotateY(180deg);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:18px}
+    .back-content{display:flex;flex-direction:column;align-items:center;gap:12px;padding:8px 14px;opacity:0;transform:translateY(10px);transition:opacity .6s ease,transform .6s ease}
+    .card-container.is-flipped .back-content{opacity:1;transform:translateY(0)}
+    .scene-img{width:86%;max-width:720px;height:auto;border-radius:12px;box-shadow:0 10px 34px rgba(0,0,0,.14);object-fit:cover;transition:transform .45s ease}
+    .message{font-size:18px;color:var(--text);line-height:1.6;padding:8px 6px;max-width:86%;background:rgba(255,255,255,0.6);border-radius:8px}
+    .back-actions{display:flex;gap:12px;margin-top:8px;align-items:center}
+    .close-btn{background:var(--accent);color:#fff;border:none;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:700;box-shadow: var(--glow)}
+    .card-container.is-flipped .card-front{transform:rotateY(-180deg)}
+    .card-container.is-flipped .card-back{transform:rotateY(0deg)}
+    @media (max-width:900px){.card-container{height:600px}.front-content h1{font-size:26px}.message{font-size:16px}}
+    /* particles */
+    .heart{position:fixed;pointer-events:none;z-index:1100;width:22px;height:22px;border-radius:50%;background: radial-gradient(circle at 30% 30%, #fff6, var(--accent));box-shadow:0 2px 8px rgba(0,0,0,.12);opacity:0.95;transform-origin:center}
+    .confetti-piece{position:fixed;pointer-events:none;z-index:1100}
+    .glow-ring{position:absolute;inset:6px;border-radius:12px;box-shadow:0 0 100px rgba(255,75,142,0.08);pointer-events:none}
+    button:focus{outline:3px solid rgba(215,38,61,.14);outline-offset:2px}
+  </style>
+</head>
+<body>
+  <!-- waves canvas (multicolor dynamic "sea" waves) -->
+  <canvas id="waves"></canvas>
+  <!-- snow canvas -->
+  <canvas id="snow"></canvas>
+
+  <main class="page" aria-label="Thiệp Giáng Sinh">
+    <section class="card-wrap">
+      <div class="card-container" id="card" aria-live="polite" aria-hidden="false">
+        <!-- FRONT -->
+        <div class="card-face card-front" role="button" aria-label="Mở thiệp (ấn Enter hoặc nhấn) - front">
+          <div class="front-content">
+            <div class="emoji" aria-hidden="true">🎄</div>
+            <h1>Merry Christmas!</h1>
+            <p class="sub">CHÚC BẠN SIÊU THÂN CHU HOÀI ANH CÓ 1 NGÀY GIÁNG SINH VUI VẺ NHAAAAAA! 🎅🎁</p>
+            <div style="display:flex;gap:10px;align-items:center;">
+              <button class="open-btn" id="openBtn" aria-controls="card" aria-expanded="false">Mở thiệp</button>
+            </div>
+          </div>
+          <div class="glow-ring" aria-hidden="true"></div>
+        </div>
+
+        <!-- BACK -->
+        <div class="card-face card-back" role="region" aria-hidden="true">
+          <div class="back-content">
+            <img id="scene" class="scene-img" src="merrychristmas.jpg" alt="Merry Christmas scene" onerror="this.style.display='none'">
+            <div class="message" id="msg">
+              <p>Giáng sinh này anh không cần điều ước nào khác, chỉ mong được ở cạnh em.
+Cảm ơn em vì đã xuất hiện và làm cho mỗi ngày của anh trở nên ấm áp hơn.
+Chúc người anh thương một mùa Noel thật an lành ❤️🎄✨
+
+            </div>
+
+            <div class="back-actions" role="toolbar" aria-label="Hành động thiệp">
+              <button class="close-btn" id="closeBtn">Đóng</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Audio element -->
+  <audio id="bgMusic" loop preload="auto">
+    <source src="All I Want for Christmas Is You.mp3" type="audio/mpeg">
+  </audio>
+
+<script>
+/* ---------- Waves (canvas) & other effects ---------- */
+
+/* Waves canvas setup */
+const waves = document.getElementById('waves');
+const wctx = waves.getContext && waves.getContext('2d');
+function resizeWaves(){
+  waves.width = window.innerWidth;
+  waves.height = Math.max(200, Math.round(window.innerHeight * 0.45));
+  waves.style.height = waves.height + 'px';
+}
+window.addEventListener('resize', resizeWaves);
+resizeWaves();
+
+/* Layered sine waves */
+const waveLayers = [
+  {amp: 18, speed: 0.6, wavelength: 0.012, colorStops: ['rgba(255,255,255,0.06)','rgba(255, 82, 82,0.14)']},
+  {amp: 28, speed: 0.4, wavelength: 0.008, colorStops: ['rgba(255,255,255,0.04)','rgba(255,180,200,0.10)']},
+  {amp: 40, speed: 0.25, wavelength: 0.006, colorStops: ['rgba(255,255,255,0.02)','rgba(255, 86, 130,0.08)']}
+];
+let waveOffset = 0;
+function drawWaves(){
+  if(!wctx) return;
+  const W = waves.width, H = waves.height;
+  wctx.clearRect(0,0,W,H);
+  waveOffset += 0.6;
+  waveLayers.forEach((layer, idx) => {
+    const amp = layer.amp;
+    const wavelength = layer.wavelength;
+    const speed = layer.speed;
+    const phase = waveOffset * speed * (idx+1);
+    // gradient for layer
+    const g = wctx.createLinearGradient(0,0,0,H);
+    g.addColorStop(0, layer.colorStops[0]);
+    g.addColorStop(1, layer.colorStops[1]);
+    wctx.fillStyle = g;
+    wctx.beginPath();
+    wctx.moveTo(0, H);
+    for(let x=0;x<=W;x++){
+      const y = H/2 + Math.sin((x * wavelength) + phase) * amp;
+      wctx.lineTo(x, y);
+    }
+    wctx.lineTo(W, H);
+    wctx.closePath();
+    wctx.fill();
+  });
+  requestAnimationFrame(drawWaves);
+}
+drawWaves();
+
+/* ---------- Snow (existing) ---------- */
+const snow = document.getElementById('snow');
+const sctx = snow.getContext && snow.getContext('2d');
+let sFlakes = [];
+function resizeSnow(){ if(!snow) return; snow.width = window.innerWidth; snow.height = window.innerHeight; initSnow(); }
+window.addEventListener('resize', resizeSnow);
+function initSnow(){
+  sFlakes = [];
+  if(!sctx) return;
+  const count = Math.max(80, Math.round(window.innerWidth / 8));
+  for(let i=0;i<count;i++) sFlakes.push({ x: Math.random()*snow.width, y: Math.random()*snow.height, r: 1 + Math.random()*3.5, vx: -0.5 + Math.random()*1, vy: 0.5 + Math.random()*1.5, a: Math.random()*Math.PI*2, ta: 0.01 + Math.random()*0.03 });
+}
+function drawSnow(){
+  if(!sctx) return;
+  sctx.clearRect(0,0,snow.width,snow.height);
+  sctx.fillStyle = 'rgba(255,255,255,0.9)';
+  for(let fl of sFlakes){
+    sctx.beginPath(); sctx.arc(fl.x, fl.y, fl.r, 0, Math.PI*2); sctx.fill();
+    fl.x += fl.vx + Math.sin(fl.a)*0.3; fl.y += fl.vy; fl.a += fl.ta;
+    if(fl.y > snow.height + 10){ fl.y = -10; fl.x = Math.random()*snow.width; }
+    if(fl.x > snow.width + 10) fl.x = -10;
+    if(fl.x < -10) fl.x = snow.width + 10;
+  }
+  requestAnimationFrame(drawSnow);
+}
+resizeSnow(); drawSnow();
+
+/* ---------- Card interactions & particles ---------- */
+const card = document.getElementById('card');
+const openBtn = document.getElementById('openBtn');
+const closeBtn = document.getElementById('closeBtn');
+const frontClickable = card.querySelector('.card-front');
+const backRegion = card.querySelector('.card-back');
+const bgMusic = document.getElementById('bgMusic');
+const scene = document.getElementById('scene');
+
+let heartsInterval = null;
+let autoplayAttempted = false;
+let userGestureListenerAdded = false;
+
+function openCard(){
+  card.classList.add('is-flipped');
+  backRegion.removeAttribute('aria-hidden');
+  openBtn.setAttribute('aria-expanded','true');
+  launchHearts(20,120);
+  burstConfetti(60);
+  card.style.transform='scale(1.01)';
+  setTimeout(()=>card.style.transform='scale(1)',500);
+  tryPlayMusicOnGesture();
+}
+function closeCard(){
+  card.classList.remove('is-flipped');
+  backRegion.setAttribute('aria-hidden','true');
+  openBtn.setAttribute('aria-expanded','false');
+}
+
+openBtn.addEventListener('click', openCard);
+closeBtn.addEventListener('click', closeCard);
+frontClickable.addEventListener('click', (e)=>{ if(e.target===openBtn) return; openCard(); });
+document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeCard(); if(e.key==='Enter' && !card.classList.contains('is-flipped')) openCard(); });
+
+/* Hearts */
+function launchHearts(count=12, interval=160){
+  let c=0; if(heartsInterval) clearInterval(heartsInterval);
+  heartsInterval = setInterval(()=>{ createHeart(); c++; if(c>=count){ clearInterval(heartsInterval); heartsInterval=null; } }, interval);
+}
+function createHeart(){
+  const el=document.createElement('div'); el.className='heart';
+  const size=12 + Math.random()*36; el.style.width=el.style.height=size+'px';
+  el.style.left=(15 + Math.random()*70)+'%'; el.style.bottom='-40px'; el.style.opacity=1;
+  document.body.appendChild(el);
+  requestAnimationFrame(()=>{ el.style.transform=`translateY(-520px) scale(${0.6+Math.random()}) rotate(${Math.random()*360}deg)`; el.style.bottom=(60+Math.random()*30)+'%'; el.style.opacity=0; });
+  setTimeout(()=>el.remove(),2600);
+}
+
+/* Confetti */
+function burstConfetti(count=60){
+  for(let i=0;i<count;i++){
+    const el=document.createElement('div'); el.className='confetti-piece';
+    const w=6+Math.random()*12, h=8+Math.random()*18; el.style.width=w+'px'; el.style.height=h+'px';
+    el.style.left=(10+Math.random()*80)+'%'; el.style.top=(5+Math.random()*30)+'%';
+    el.style.background=`hsl(${Math.random()*360} 80% 60%)`; el.style.opacity=1;
+    el.style.borderRadius=(Math.random()>0.5?'2px':'50%');
+    document.body.appendChild(el);
+    const dur=800 + Math.random()*1600;
+    el.animate([{transform:`translateY(0) rotate(${Math.random()*360}deg)`, opacity:1},{transform:`translateY(${300 + Math.random()*600}px) rotate(${Math.random()*720}deg)`, opacity:0}], {duration:dur, easing:'cubic-bezier(.2,.7,.2,1)'});
+    setTimeout(()=>el.remove(), dur+50);
+  }
+}
+
+/* ---------- Autoplay handling ---------- */
+async function tryAutoplay(){
+  if(autoplayAttempted) return;
+  autoplayAttempted = true;
+  if(!bgMusic) return;
+  bgMusic.volume = 0;
+  try{
+    await bgMusic.play();
+    fadeVolumeUp(0.85);
+  }catch(e){
+    if(!userGestureListenerAdded){
+      ['click','touchstart','keydown'].forEach(ev=>document.addEventListener(ev,userGestureStart,{once:true}));
+      userGestureListenerAdded=true;
+    }
+  }
+}
+function userGestureStart(){ attemptPlayWithFade(); }
+async function attemptPlayWithFade(){ try{ bgMusic.currentTime = bgMusic.currentTime || 0; bgMusic.volume = 0; await bgMusic.play(); fadeVolumeUp(0.85); }catch(e){ console.log('play blocked', e); } }
+document.addEventListener('DOMContentLoaded', tryAutoplay);
+function fadeVolumeUp(target=1, timeMs=1200){ const start=bgMusic.volume||0; const steps=20; const stepTime=timeMs/steps; let i=0; const id=setInterval(()=>{ i++; bgMusic.volume = Math.max(0, Math.min(1, start + (target-start)*(i/steps))); if(i>=steps) clearInterval(id); }, stepTime); }
+bgMusic && bgMusic.addEventListener('error', ()=>console.log('Audio failed or missing'));
+
+/* Quick demo on load to show effects */
+function demoEffects(){ launchHearts(8,140); burstConfetti(30); for(let i=0;i<20;i++){ sFlakes.push({ x: Math.random()*snow.width, y: Math.random()*snow.height, r:1+Math.random()*3.5, vx:-1+Math.random()*2, vy:1+Math.random()*2, a:Math.random()*Math.PI*2, ta:0.02 + Math.random()*0.04 }); } }
+document.addEventListener('DOMContentLoaded', ()=>setTimeout(demoEffects, 600));
+
+/* Expose helpers for console */
+window._demoEffects = demoEffects;
+window._launchHearts = launchHearts;
+window._burstConfetti = burstConfetti;
+</script>
+</body>
+</html>
