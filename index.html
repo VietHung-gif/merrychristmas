@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Merry Christmas — Thiệp</title>
+  <title>Merry Christmas</title>
   <style>
     :root{
       --accent:#d7263d; --accent-dark:#a21b2a; --text:#3a2028;
@@ -42,13 +42,26 @@
     .card-back{background:linear-gradient(180deg,var(--card-back),#fffaf7);transform:rotateY(180deg);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:18px}
     .back-content{display:flex;flex-direction:column;align-items:center;gap:12px;padding:8px 14px;opacity:0;transform:translateY(10px);transition:opacity .6s ease,transform .6s ease}
     .card-container.is-flipped .back-content{opacity:1;transform:translateY(0)}
-    .scene-img{width:86%;max-width:720px;height:auto;border-radius:12px;box-shadow:0 10px 34px rgba(0,0,0,.14);object-fit:cover;transition:transform .45s ease}
+    .scene-img{
+      width: auto;
+      max-width:70%;
+      max-height:40vh;
+      height: auto;
+      display:block;
+      border-radius:12px;
+      box-shadow:0 10px 34px rgba(0,0,0,.14);
+      object-fit:contain;
+      transition:transform .45s ease;
+    }
     .message{font-size:18px;color:var(--text);line-height:1.6;padding:8px 6px;max-width:86%;background:rgba(255,255,255,0.6);border-radius:8px}
     .back-actions{display:flex;gap:12px;margin-top:8px;align-items:center}
     .close-btn{background:var(--accent);color:#fff;border:none;padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:700;box-shadow: var(--glow)}
     .card-container.is-flipped .card-front{transform:rotateY(-180deg)}
     .card-container.is-flipped .card-back{transform:rotateY(0deg)}
     @media (max-width:900px){.card-container{height:600px}.front-content h1{font-size:26px}.message{font-size:16px}}
+    @media (max-width:480px){
+      .scene-img{max-height:30vh;max-width:92%;}
+    }
     /* particles */
     .heart{position:fixed;pointer-events:none;z-index:1100;width:22px;height:22px;border-radius:50%;background: radial-gradient(circle at 30% 30%, #fff6, var(--accent));box-shadow:0 2px 8px rgba(0,0,0,.12);opacity:0.95;transform-origin:center}
     .confetti-piece{position:fixed;pointer-events:none;z-index:1100}
@@ -81,11 +94,11 @@
         <!-- BACK -->
         <div class="card-face card-back" role="region" aria-hidden="true">
           <div class="back-content">
-            <img id="scene" class="scene-img" src="merrychristmas.jpg" alt="Merry Christmas scene" onerror="this.style.display='none'">
+            <img id="scene" class="scene-img" src="1.jpg" alt="Merry Christmas scene" onerror="this.style.display='none'">
             <div class="message" id="msg">
-              <p>Giáng sinh này anh không cần điều ước nào khác, chỉ mong được ở cạnh em.
-Cảm ơn em vì đã xuất hiện và làm cho mỗi ngày của anh trở nên ấm áp hơn.
-Chúc người anh thương một mùa Noel thật an lành ❤️🎄✨
+              <p>Giáng sinh này anhh không cần điều ước nào khác, chỉ mong được ở cạnh eimm.
+Cảm ơn eim vì đã xuất hiện và làm cho mỗi ngày của anhhh trở nên ấm áp hơn.
+Chúc người anh thương một mùa Noel thật an lành vui vẻ nhaaaaaa ❤️🎄✨
 
             </div>
 
